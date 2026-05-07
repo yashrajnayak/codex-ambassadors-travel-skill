@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex Ambassadors Travel"
+  short_description: "Add ambassador trips through GitHub issues"
+  default_prompt: "Use $codex-ambassadors-travel-skill to add my Codex Ambassador trip to the travel dashboard."
