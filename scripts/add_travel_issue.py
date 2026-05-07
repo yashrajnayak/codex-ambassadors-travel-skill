@@ -21,9 +21,7 @@ TITLE = "WILL BE UPDATED BY AUTOMATION"
 LABELS = ["travel-plan", "dashboard", "status: needs-review"]
 
 ADD_NEW_AMBASSADOR = "Other / add a new ambassador"
-ADD_NEW_CITY = "Other / add a new city"
 NO_ADDITIONAL_CITY = "No additional city"
-NO_NEW_CITY = "No new city"
 CONSENT_TEXT = "I am okay with this trip appearing in the private repo README dashboard."
 
 
@@ -121,13 +119,6 @@ def print_options(repo: str, option_type: str) -> None:
         print("Cities")
         for city in sorted(cities, key=lambda item: (item.get("city", ""), item.get("country", ""))):
             print(f"- {city_label(city)}")
-        if option_type == "all":
-            print()
-    if option_type in {"countries", "all"}:
-        countries = load_repo_json(repo, "data/countries.json")
-        print("Countries")
-        for country in countries:
-            print(f"- {country}")
 
 
 def issue_value(value: str | None) -> str:
@@ -167,8 +158,6 @@ def build_issue_body(args: argparse.Namespace, destinations: list[Destination]) 
             ])
 
     fields.extend([
-        ("New destination city", args.new_city),
-        ("New destination country", args.new_country if args.new_city else NO_NEW_CITY),
         ("When are you free to meet?", args.availability),
         ("Best way to coordinate", args.contact),
     ])
@@ -193,14 +182,6 @@ def validate_submission(args: argparse.Namespace, destinations: list[Destination
         if parsed.scheme not in {"http", "https"} or not parsed.netloc:
             raise SystemExit("--new-ambassador-linkedin must be a valid http(s) URL.")
 
-    new_city_count = sum(1 for destination in destinations if destination.city == ADD_NEW_CITY)
-    if new_city_count > 1:
-        raise SystemExit("The current issue template supports one new destination city per issue.")
-    if new_city_count and (not args.new_city or not args.new_country):
-        raise SystemExit("Provide --new-city and --new-country when using 'Other / add a new city'.")
-    if not new_city_count and (args.new_city or args.new_country):
-        raise SystemExit("Use 'Other / add a new city' as a destination when providing --new-city or --new-country.")
-
 
 def validate_against_remote(repo: str, args: argparse.Namespace, destinations: list[Destination]) -> None:
     ambassadors = load_repo_json(repo, "data/ambassadors.json")
@@ -219,18 +200,10 @@ def validate_against_remote(repo: str, args: argparse.Namespace, destinations: l
     cities = load_repo_json(repo, "data/cities.json")
     city_labels = {city_label(city) for city in cities}
     for destination in destinations:
-        if destination.city != ADD_NEW_CITY and destination.city not in city_labels:
+        if destination.city not in city_labels:
             raise SystemExit(
                 f"Destination city is not currently tracked: {destination.city}\n"
-                "Use --list cities to inspect options, or use 'Other / add a new city' with --new-city and --new-country."
-            )
-
-    if any(destination.city == ADD_NEW_CITY for destination in destinations):
-        countries = set(load_repo_json(repo, "data/countries.json"))
-        if args.new_country not in countries:
-            raise SystemExit(
-                f"New destination country is not tracked: {args.new_country}\n"
-                "Use --list countries to inspect options."
+                "Use --list cities to inspect options, or ask a maintainer to add the city first."
             )
 
 
@@ -258,7 +231,7 @@ def build_parser() -> argparse.ArgumentParser:
         description="Create a Codex Ambassadors travel-plan issue for the dashboard automation."
     )
     parser.add_argument("--repo", default=DEFAULT_REPO, help=f"Target repo. Default: {DEFAULT_REPO}")
-    parser.add_argument("--list", choices=["ambassadors", "cities", "countries", "all"], help="List current dropdown options and exit.")
+    parser.add_argument("--list", choices=["ambassadors", "cities", "all"], help="List current dropdown options and exit.")
     parser.add_argument("--ambassador", help="Existing ambassador name exactly as tracked.")
     parser.add_argument("--new-ambassador-name", help="New ambassador name if not already tracked.")
     parser.add_argument("--new-ambassador-linkedin", help="Optional LinkedIn URL for a new ambassador.")
@@ -268,8 +241,6 @@ def build_parser() -> argparse.ArgumentParser:
         type=parse_destination,
         help="Destination in 'City, Country|YYYY-MM-DD|YYYY-MM-DD' format. Repeat up to three times.",
     )
-    parser.add_argument("--new-city", help="New city name when destination is 'Other / add a new city'.")
-    parser.add_argument("--new-country", help="New country name when destination is 'Other / add a new city'.")
     parser.add_argument("--availability", help="Optional availability notes.")
     parser.add_argument("--contact", help="Optional contact or coordination notes.")
     parser.add_argument("--dry-run", action="store_true", help="Print the issue body without creating an issue.")
@@ -290,8 +261,15 @@ def main() -> int:
         parser.error("At least one --destination is required unless --list is used.")
 
     validate_submission(args, destinations)
-    body = build_issue_body(args, destinations)
+    if not args.no_remote_validation:
+        require_gh()
+        require_repo_access(args.repo)
+        validate_against_remote(args.repo, args, destinations)
+    elif not args.dry_run:
+        require_gh()
+        require_repo_access(args.repo)
 
+    body = build_issue_body(args, destinations)
     if args.dry_run:
         print(f"Repo: {args.repo}")
         print(f"Title: {TITLE}")
@@ -299,11 +277,6 @@ def main() -> int:
         print()
         print(body)
         return 0
-
-    require_gh()
-    require_repo_access(args.repo)
-    if not args.no_remote_validation:
-        validate_against_remote(args.repo, args, destinations)
 
     issue_url = create_issue(args.repo, body)
     print(issue_url)

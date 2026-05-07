@@ -2,7 +2,7 @@
 
 A public Codex Skill for adding trips to the private Codex Ambassadors travel dashboard through GitHub issues.
 
-The skill lets ambassadors ask Codex to submit travel plans without editing dashboard data by hand. If the ambassador has access to the private repo, Codex creates a `travel-plan` issue with the right fields; the dashboard repo's GitHub Actions then clean up the issue, update source data, detect possible duplicates, and refresh the README.
+The skill lets ambassadors ask Codex to submit travel plans without editing dashboard data by hand. If the ambassador has access to the private repo, Codex creates a `travel-plan` issue with the right tracked-city fields; the dashboard repo's GitHub Actions then clean up the issue, update source data, detect possible duplicates, and refresh the README.
 
 ## Install
 

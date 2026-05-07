@@ -1,6 +1,6 @@
 ---
 name: codex-ambassadors-travel-skill
-description: Add or update Codex Ambassador travel plans in the private codex-ambassadors-travel GitHub repo by creating correctly formatted travel-plan issues with GitHub CLI. Use when a Codex Ambassador asks Codex to add a trip, submit travel dates, choose up to three destination cities, add a new ambassador, add a new destination city, or update the travel dashboard through the repo automation.
+description: Add or update Codex Ambassador travel plans in the private codex-ambassadors-travel GitHub repo by creating correctly formatted travel-plan issues with GitHub CLI. Use when a Codex Ambassador asks Codex to add a trip, submit travel dates, choose up to three tracked destination cities, add a new ambassador, or update the travel dashboard through the repo automation.
 ---
 
 # Codex Ambassadors Travel Skill
@@ -25,7 +25,7 @@ Default target repo: `yashrajnayak/codex-ambassadors-travel`.
    - Destinations: one to three city labels in `City, Country` format.
    - Dates: tentative arrival and departure for each city, using `YYYY-MM-DD`.
    - Optional availability and contact details.
-   - If a city is not tracked, use `Other / add a new city` and provide `--new-city` plus `--new-country`.
+   - If a city is not tracked, ask a maintainer to add it to the private repo's `data/cities.json` first.
 
 3. Discover current dropdown options when needed.
    ```bash
@@ -33,7 +33,7 @@ Default target repo: `yashrajnayak/codex-ambassadors-travel`.
    python scripts/add_travel_issue.py --repo yashrajnayak/codex-ambassadors-travel --list ambassadors
    ```
 
-4. Dry-run the issue body before creating it when the user gave free-form data or a new city.
+4. Dry-run the issue body before creating it when the user gave free-form data.
    ```bash
    python scripts/add_travel_issue.py \
      --repo yashrajnayak/codex-ambassadors-travel \
@@ -77,22 +77,13 @@ python scripts/add_travel_issue.py \
   --destination "Berlin, Germany|2026-06-23|2026-06-25"
 ```
 
-For a new destination city:
-```bash
-python scripts/add_travel_issue.py \
-  --ambassador "Yashraj Nayak" \
-  --destination "Other / add a new city|2026-06-15|2026-06-18" \
-  --new-city "Lisbon" \
-  --new-country "Portugal"
-```
-
 ## Guardrails
 
 - Submit at most three destinations per issue.
 - Keep each destination date range valid: departure must be on or after arrival.
 - Use `--new-ambassador-name` only when the ambassador is not already in the dashboard data.
-- Use `--new-city` and `--new-country` only for one new city per issue; the current issue template has one new-city field.
 - Use existing city labels exactly when possible. If unsure, list cities first.
+- Do not create travel issues for untracked cities. Ask a maintainer to add the city to the private repo data first.
 - Do not add local filesystem paths, private tokens, Slack-only identifiers, or travel details the user did not approve for the dashboard.
 - If `gh issue create` succeeds, do not manually rewrite the title or body. The private repo automation owns that cleanup.
 
