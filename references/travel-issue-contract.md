@@ -4,7 +4,7 @@ The private dashboard repo processes travel submissions from GitHub issues. The 
 
 ## Target
 
-- Default repo: `yashrajnayak/codex-ambassadors-travel`
+- Default repo: `globodex/codex-ambassadors-travel`
 - Issue title: `WILL BE UPDATED BY AUTOMATION`
 - Labels: `travel-plan`, `dashboard`, `status: needs-review`
 

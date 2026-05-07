@@ -10,7 +10,7 @@ Clone this repo into your Codex skills folder:
 
 ```bash
 mkdir -p ~/.codex/skills
-git clone https://github.com/yashrajnayak/codex-ambassadors-travel-skill ~/.codex/skills/codex-ambassadors-travel-skill
+git clone https://github.com/globodex/codex-ambassadors-travel-skill ~/.codex/skills/codex-ambassadors-travel-skill
 ```
 
 Then use it in Codex:
@@ -22,9 +22,9 @@ Use $codex-ambassadors-travel-skill to add my Codex Ambassador trip to Tokyo fro
 ## Requirements
 
 - GitHub CLI (`gh`) installed and authenticated.
-- Collaborator access to the private dashboard repo: `yashrajnayak/codex-ambassadors-travel`.
+- Access to the private dashboard repo: `globodex/codex-ambassadors-travel`.
 
-For a user-owned private repo, adding ambassadors as outside collaborators is the simplest access model. If this grows beyond a small group, moving the dashboard into a GitHub organization and granting access through a team will be easier to maintain.
+For the org-owned private repo, granting the `codex-ambassadors` GitHub team access is the easiest way to manage ambassador access.
 
 ## How It Works
 

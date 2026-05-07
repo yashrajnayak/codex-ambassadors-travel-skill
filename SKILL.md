@@ -9,14 +9,14 @@ description: Add or update Codex Ambassador travel plans in the private codex-am
 
 Use this skill to submit Codex Ambassador trips through the private travel repo's issue automation. Create travel-plan issues; do not edit the private repo's `data/*.json` files directly for ambassador submissions.
 
-Default target repo: `yashrajnayak/codex-ambassadors-travel`.
+Default target repo: `globodex/codex-ambassadors-travel`.
 
 ## Workflow
 
 1. Check GitHub access.
    ```bash
    gh auth status
-   gh repo view yashrajnayak/codex-ambassadors-travel --json nameWithOwner,visibility
+   gh repo view globodex/codex-ambassadors-travel --json nameWithOwner,visibility
    ```
    If this fails, explain that the ambassador needs collaborator access to the private repo before the skill can submit a trip.
 
@@ -29,14 +29,14 @@ Default target repo: `yashrajnayak/codex-ambassadors-travel`.
 
 3. Discover current dropdown options when needed.
    ```bash
-   python scripts/add_travel_issue.py --repo yashrajnayak/codex-ambassadors-travel --list cities
-   python scripts/add_travel_issue.py --repo yashrajnayak/codex-ambassadors-travel --list ambassadors
+   python scripts/add_travel_issue.py --repo globodex/codex-ambassadors-travel --list cities
+   python scripts/add_travel_issue.py --repo globodex/codex-ambassadors-travel --list ambassadors
    ```
 
 4. Dry-run the issue body before creating it when the user gave free-form data.
    ```bash
    python scripts/add_travel_issue.py \
-     --repo yashrajnayak/codex-ambassadors-travel \
+     --repo globodex/codex-ambassadors-travel \
      --ambassador "Yashraj Nayak" \
      --destination "Tokyo, Japan|2026-05-20|2026-05-24" \
      --availability "Evenings after 6 PM" \
@@ -47,7 +47,7 @@ Default target repo: `yashrajnayak/codex-ambassadors-travel`.
 5. Create the issue.
    ```bash
    python scripts/add_travel_issue.py \
-     --repo yashrajnayak/codex-ambassadors-travel \
+     --repo globodex/codex-ambassadors-travel \
      --ambassador "Yashraj Nayak" \
      --destination "Tokyo, Japan|2026-05-20|2026-05-24" \
      --availability "Evenings after 6 PM" \

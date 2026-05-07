@@ -16,7 +16,7 @@ from typing import Any
 from urllib.parse import urlparse
 
 
-DEFAULT_REPO = "yashrajnayak/codex-ambassadors-travel"
+DEFAULT_REPO = "globodex/codex-ambassadors-travel"
 TITLE = "WILL BE UPDATED BY AUTOMATION"
 LABELS = ["travel-plan", "dashboard", "status: needs-review"]
 
